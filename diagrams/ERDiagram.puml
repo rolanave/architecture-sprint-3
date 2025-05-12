@@ -1,0 +1,106 @@
+@startuml ERDiagram
+
+skinparam linetype ortho
+
+entity User {
+   * userID: UUID <<generated>>
+   --
+   * name
+   address
+   contactEmail: text
+   contactMobile: text
+}
+
+'managed system such as Heater, Temperature Sensor or Camera
+entity ManagedSystemType {
+    * systemTypeID: UUID
+    --
+    * name: text
+    * systemType:
+    characteristic1Name: text
+    characteristic2Name: text
+    characteristic3Name: text
+}
+
+' allowed actions, such as Enable, Disable, UpdateTemperature, etc
+entity AllowedAction {
+    * allowedActionID: UUID
+    --
+    * actionName: text
+    * managedSystemTypeId: UUID
+    characteristic1Name: text
+    characteristic2Name: text
+    characteristic3Name: text
+    template: text
+}
+
+ManagedSystemType }o--|| AllowedAction::managedSystemTypeId
+
+entity ManagedSystem {
+    * systemID: UUID <<generated>>
+    --
+    * ownerID: UUID 
+    address: text
+    managedSystemTypeID: UUID
+    characteristic1Value: text
+    characteristic2Value: text
+    characteristic3Value: text
+
+}
+
+User }o--|| ManagedSystem::ownerID
+ManagedSystemType }o--|| ManagedSystem::managedSystemTypeID
+
+entity Action {
+    * actionID: UUID <<generated>>
+    --
+    * creatorUserID: UUID
+    * submissionDtm: timestamp
+    * actionDtm: time
+    * managedSystemID: UUID
+    * allowedActionTypeID: UUID
+    characteristic1Value: text
+    characteristic2Value: text
+    characteristic3Value: text
+}
+
+User }o--|| Action::creatorUserID
+ManagedSystem }o--|| Action::managedSystemID
+AllowedAction }o--|| Action::allowedActionTypeID
+
+entity ActionResult {
+    * actionID: UUID
+    * executedTime: timestemp
+    --
+    * resultCode: number
+    characteristic1Value: text
+    characteristic2Value: text
+    characteristic3Value: text
+}
+
+Action }|--|| ActionResult
+
+entity Schedule {
+    * scheduleID: UUID
+    --
+    ' execution period, e.g. for Sensor it can be each first second
+    ' for heater it can be 2 schedule: Enable on 5am each day and Disable 9am each day
+    * executionPeriod: {Sec, Min, Hr, Daily, Monthly, Weekly}
+    * executionTimeInPeriodSeconds: integer
+}
+
+entity ScheduledAction {
+    * actionID: UUID
+    * scheduleID: UUID
+    * nearestExecutionTime: timestamp
+    --
+    executionEndDtm: timestamp
+}
+
+Action }o--|| ScheduledAction::actionID
+Schedule }o--|| ScheduledAction::scheduleID
+User }o--|| ScheduledAction::creatorUserID 
+ManagedSystem }o--|| ScheduledAction::managedSystemID 
+AllowedAction }o--|| ScheduledAction::allowedActionTypeID
+
+@enduml

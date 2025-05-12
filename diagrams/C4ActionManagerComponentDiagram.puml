@@ -1,0 +1,43 @@
+@startuml C4ActionManagerComponent
+!include <C4/C4_Component>
+
+skinparam linetype ortho
+skinparam nodesep 150
+skinparam ranksep 200
+
+Container(apiGW, "ApiGW", "Microservice")
+ContainerDb(db, "Database", "PostgreSQL")
+ContainerDb(kafkaNow, "Kafka", "Topic: Immediate actions")
+ContainerDb(kafkaScheduled, "Kafka", "Topic: Actions To Schedule")
+
+Container_Boundary(ActionManager, "Action Manager", "Microservice") {
+    Component(extActionsCtrl, "External Action Controller", "Processes External Action Requests")
+    Component(plndActionsProc, "Action Processor", "Execute Actions")
+    Component(heaterFacade, "HeaterFacade", "Enable, Disable or Set Temperature")
+    Component(temperatureSensorFacade, "TempSensorFacade", "Query Temparure")
+    Component(cameraFacade, "CameraFacade", "Enable, Disable, Start Recording")
+}
+System_Ext(heaterSystem, "Heating System", "Managed system")
+System_Ext(temperatureSensorSystem, "Temperature Sensor", "Sensor")
+System_Ext(cameraSystem, "Remote Camera", "Managed system")
+
+Lay_R(plndActionsProc, extActionsCtrl)
+Lay_R(apiGW, kafkaScheduled)
+
+Rel(apiGW, extActionsCtrl, "Submit new action (TurnOn, TurnOff, Update Characteristics) or Query")
+Rel(extActionsCtrl, kafkaNow, "Submit Action Event for Async Execution")
+Rel_U(extActionsCtrl, kafkaScheduled, "Submit Action Event for Scheduled Execution")
+
+Rel(extActionsCtrl, temperatureSensorFacade, "Uses")
+Rel(plndActionsProc, heaterFacade, "Uses")
+Rel(plndActionsProc, cameraFacade, "Uses")
+Rel(temperatureSensorFacade, temperatureSensorSystem, "Synchrounous Sensor Query Request")
+Rel(heaterFacade, heaterSystem, "Apply async action (Set target temperatire) / Query current status")
+Rel(cameraFacade, cameraSystem, "Enable/ startRecord/ Disable")
+Rel(kafkaNow, plndActionsProc, "Take action that is ready for immediate execution")
+Rel_D(extActionsCtrl, db, "Keep action in history")
+Rel_D(plndActionsProc, db, "Store action result in history")
+Rel_U(db, extActionsCtrl, "Return result of action execution status")
+
+SHOW_LEGEND()
+@enduml

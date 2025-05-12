@@ -1,0 +1,23 @@
+@startuml C4SchedulingRequestProcessorCodeDiagram
+
+package "Action Scheduling Request Processor" {
+    interface KafkaActionSchedulingService
+    class KafkaActionSchedulingServiceImpl
+
+    class ActionToScheduleEvent
+    class ScheduledActionDbo
+    class DbConnectionService
+}
+
+interface SchedulingManagerException
+interface KafkaConsumerService
+
+KafkaActionSchedulingService <|.. KafkaActionSchedulingServiceImpl : implements
+KafkaConsumerService <|.. KafkaActionSchedulingService : extends
+
+KafkaActionSchedulingServiceImpl --> DbConnectionService : uses
+KafkaActionSchedulingServiceImpl *-- ActionToScheduleEvent : uses
+KafkaActionSchedulingServiceImpl o-- ScheduledActionDbo : uses
+KafkaActionSchedulingServiceImpl --> SchedulingManagerException : throws
+
+@enduml

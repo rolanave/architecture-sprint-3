@@ -1,0 +1,16 @@
+@startuml C4ContextWarmHouse
+!include <C4/C4_Container>
+
+Person(userAlias, "User", "System User")
+Person(engineerAlias, "Engineer", "Installation Engineer")
+System(systemAlias, "Warmhouse System", "Heating System Management")
+System_Ext(heaterAlias, "Heating System", "Managed system")
+System_Ext(temperatureSensorAlias, "Temperature Sensor", "Sensor")
+
+
+Rel(userAlias, systemAlias, "Manages heater / query temperature", "over Http")
+Rel(engineerAlias, systemAlias, "Register new equipment", "internally via database")
+Rel(systemAlias, heaterAlias, "Apply action (Set target temperatire) / Query current status")
+Rel(systemAlias, temperatureSensorAlias, "Query current temperature")
+
+@enduml
