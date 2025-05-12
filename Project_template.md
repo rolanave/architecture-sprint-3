@@ -57,11 +57,9 @@ Services: HeatingSystemService
 
 ### 5. Визуализация контекста системы — диаграмма С4
 
-<div hidden>
-[C4ContextWarmHouse](C4ContextWarmHouse.puml)
-</div>
+[Диаграмма C4 контекста системы](diagrams/C4ContextDiagram.puml)
 
-![](C4ContextWarmHouse.svg)
+![](images/C4ContextWarmHouse.svg)
 
 # ✅ Задание 2. Проектирование микросервисной архитектуры
 
@@ -83,9 +81,7 @@ Services: HeatingSystemService
 
 **Диаграмма контейнеров (Containers)**
 
-<div hidden>
 [Диаграмма контейнера системы управления умными устройствами (Smart Systems)](diagrams/C4ContainerDiagram.puml)
-</div>
 
 ![](images/C4ContainerSmartSystemManagement.svg)
 
@@ -93,38 +89,28 @@ Services: HeatingSystemService
 
 Детализация добавлена для следующих компонентов:
 
-<div hidden>
 [1. Action Manager - микросервис выполнения задач](diagrams/C4ActionManagerComponentDiagram.puml)
-</div>
 
 ![](images/C4ActionManagerComponent.svg)
 
-<div hidden>
 [2. Scheduling Manager - микросервис управляющий выполнением задач по расписанию](diagrams/C4SchedulingManagerComponentDiagram.puml)
-</div>
 
 ![](images/C4SchedulingManagerComponent.svg)
 
-<div hidden>
 [3. Managed System Registry - микросервис менеджмента упраляюемыми устройствами](diagrams/C4ManagedSystemRegistryComponentDiagram.puml)
-</div>
 
 ![](images/C4ManagedSystemRegistryComponent.svg)
 
 **Диаграмма кода (Code)**
 
-<div hidden>
 [Диаграмма кода для компоненты, обрабатывающей запросы на действия по расписанию](diagrams/C4ManagedSystemRegistryComponentDiagram.puml)
-</div>
 
 ![](images/C4SchedulingRequestProcessorCodeDiagram.svg)
 
 
 # ✅ Задание 3. Разработка ER-диаграммы
 
-<div hidden>
 [ER Диаграмма дата модели](diagrams/ERDiagram.puml)
-</div>
 
 ![](images/ERDiagram.svg)
 
