@@ -1,0 +1,23 @@
+@startuml C4ManagedSystemRegistryComponent
+!include <C4/C4_Component>
+
+skinparam linetype ortho
+skinparam ranksep 150
+
+Container(apiGW, "ApiGW", "Microservice")
+ContainerDb(db, "Database", "PostgreSQL")
+
+Container_Boundary(managedSystemRegistry, "Managed System Registry") {
+    Component(mgdSystemRegistryCtrl, "Management System Registry Controller", "Component: Spring MVC Rest Controller")
+    Component(ManagedSystemRepository, "Management System Repository")
+}
+
+Rel(apiGW, mgdSystemRegistryCtrl, "Register new managed system or deregister already registered one")
+
+Rel(mgdSystemRegistryCtrl, ManagedSystemRepository, "Uses")
+
+Rel_D(ManagedSystemRepository, db, "Story information about registered managed system")
+
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,41 @@
+@startuml C4ContainerSmartSystemManagement
+!include <C4/C4_Container>
+
+skinparam linetype ortho
+skinparam nodesep 200
+skinparam ranksep 100
+
+Person(userAlias, "User", "System User")
+System_Boundary(systemAlias, "Smart Systems Management") {
+    Container(apiGW, "ApiGW", "Microservice")
+    Container(personMgmt, "UserManagement", "Microservice")
+    Container(actionMgmt, "Action Manager", "Microservice")
+    Container(scheduler, "Scheduling Manager", "Microservice")
+    Container(systemRegister, "Managed Systems Registry", "Microservice")
+    ContainerDb(db, "Database", "PostgreSQL")
+    ContainerDb(kafkaNow, "Kafka", "Topic: Immediate actions")
+    ContainerDb(kafkaScheduled, "Kafka", "Topic: Actions to schedule")
+}
+System_Ext(heaterAlias, "Heating System", "Managed system")
+System_Ext(temperatureSensorAlias, "Temperature Sensor", "Sensor")
+
+Rel(userAlias, apiGW, "Manages user / Register Managed System / Submit Action or Query", "over Http")
+Rel_L(apiGW, personMgmt, "Register User / Login")
+Rel(apiGW, systemRegister, "Resgister new managed system (e.g. Heater, Camera or Temperature Sensor)")
+Rel_R(apiGW, actionMgmt, "Submit new action (TurnOn, TurnOff, Update Characteristics) or Query")
+Rel(actionMgmt, kafkaNow, "Submit Action For Immediate execution")
+Rel(actionMgmt, kafkaScheduled, "Submit Action for Future or Scheduled execution")
+Rel(kafkaNow, actionMgmt, "Take action for immediate execution")
+Rel(kafkaScheduled, scheduler, "Take action for scheduling")
+Rel_D(scheduler, kafkaNow, "Submit scheduled action for immediate execution")
+Rel_R(actionMgmt, heaterAlias, "Apply async action (Set target temperatire) / Query current status")
+Rel(actionMgmt, temperatureSensorAlias, "Query current temperature")
+Rel_D(personMgmt, db, "Store/Obtain user info")
+Rel_D(systemRegister, db, "Store/Obtain managed system info")
+Rel_D(scheduler, db, "Store scheduled actions / Pool to get actions for execution")
+Rel_D(actionMgmt, db, "Keep action and action result in history")
+
+SHOW_LEGEND()
+
+
+@enduml

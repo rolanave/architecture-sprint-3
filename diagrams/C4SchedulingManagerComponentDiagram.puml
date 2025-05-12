@@ -1,0 +1,26 @@
+@startuml C4SchedulingManagerComponent
+!include <C4/C4_Component>
+
+skinparam linetype ortho
+skinparam ranksep 150
+skinparam nodesep 250
+
+
+
+ContainerDb(db, "Database", "PostgreSQL")
+ContainerDb(kafkaScheduled, "Kafka", "Topic: Actions To Schedule")
+ContainerDb(kafkaNow, "Kafka", "Topic: Immediate actions")
+
+
+Container_Boundary(actionScheduler, "Scheduling Manager") {
+    Component(plannedActionProcessor, "Action Scheduling Request Processor", "Kafka Consumer")
+    Component(schedulingManager, "Scheduling Manager")
+}
+
+Rel(plannedActionProcessor, kafkaScheduled, "1. Obtain Action to Schedule")
+Rel(plannedActionProcessor, db, "2. Schedule action")
+Rel(schedulingManager, db, "3. Get scheduled actions when execution time reached / 6. Reschedule action")
+Rel(schedulingManager, kafkaNow, "5. Submit scheduled action for execution")
+
+SHOW_LEGEND()
+@enduml
